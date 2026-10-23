@@ -1299,3 +1299,85 @@ a:hover {
 .data-table thead .nocase {
   text-transform: none;
 }
+
+/* --- Vehicles section --- */
+.vehicles-section {
+  border-top: 1px solid var(--line);
+}
+
+.vehicle-grid {
+  display: grid;
+  margin-top: 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.vehicle-card {
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+}
+
+.vehicle-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.vehicle-head h3 {
+  margin: 0 !important;
+  font-size: 1.15rem !important;
+}
+
+.vehicle-head .resource-status {
+  margin: 0 0 0 auto;
+}
+
+.vehicle-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex: none;
+}
+
+.vehicle-card > p {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.vehicle-specs {
+  display: grid;
+  margin: 0.9rem 0 0;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  font-size: 0.86rem;
+}
+
+.vehicle-specs dt {
+  color: var(--muted);
+}
+
+.vehicle-specs dd {
+  margin: 0;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.demo-figure {
+  padding: 0.6rem;
+}
+
+.demo-figure figcaption {
+  padding: 0 0.4rem 0.2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .vehicle-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Vehicle demo renderer</title>
+<style>
+  html, body { margin: 0; background: #dfe6e4; overflow: hidden; font-family: "Inter", "Helvetica Neue", Arial, sans-serif; }
+  canvas { display: block; }
+  .tag { position: absolute; transform: translate(-50%, -100%); padding: 5px 10px 6px; border-radius: 7px;
+         background: rgba(18, 28, 26, 0.82); color: #fff; font-size: 17px; line-height: 1.15; white-space: nowrap; }
+  .tag b { font-weight: 600; }
+  .tag span { display: block; font-size: 15px; color: #a9e3d6; font-variant-numeric: tabular-nums; }
+  .tag::after { content: ""; position: absolute; left: 50%; bottom: -6px; margin-left: -6px;
+                border: 6px solid transparent; border-bottom: 0; border-top-color: rgba(18, 28, 26, 0.82); }
+  #clock, #brand { position: absolute; bottom: 14px; padding: 4px 10px; border-radius: 6px; font-size: 16px;
+                   background: rgba(245, 248, 247, 0.85); color: #1d2b28; font-variant-numeric: tabular-nums; }
+  #clock { right: 18px; } #brand { left: 18px; }
+</style>
+</head>
+<body>
+<div id="clock"></div>
+<div id="brand">SceneFactory-3D vehicle model</div>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from "three";
+
+const W = innerWidth, H = innerHeight;
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdfe6e4);
+scene.fog = new THREE.Fog(0xdfe6e4, 120, 320);
+const camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 1000);
+camera.up.set(0, 0, 1);
+scene.add(new THREE.HemisphereLight(0xf2f6ff, 0x5a5448, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.castShadow = true;
+sun.shadow.mapSize.set(4096, 4096);
+sun.shadow.bias = -0.0004;
+scene.add(sun, sun.target);
+
+let D, cars = [], tags = [], heightAt;
+
+function surfaceInside(s, x, y) {
+  const dx = x - s.x, dy = y - s.y;
+  if (s.shape === "disc") return Math.hypot(dx, dy) <= s.r;
+  const c = Math.cos(-s.angle), n = Math.sin(-s.angle);
+  return Math.abs(dx * c - dy * n) <= s.w / 2 && Math.abs(dx * n + dy * c) <= s.h / 2;
+}
+
+function terrainTexture(T, lanes, markers) {
+  // Paint asphalt, low-friction patches, lane lines and markers at 8 px per metre.
+  const ppm = 16, wM = (T.nx - 1) * T.spacing, hM = (T.ny - 1) * T.spacing;
+  const cv = document.createElement("canvas");
+  cv.width = Math.min(8192, Math.round(wM * ppm)); cv.height = Math.min(8192, Math.round(hM * ppm));
+  const sx = cv.width / wM, sy = cv.height / hM;
+  const g = cv.getContext("2d");
+  const px = x => (x - T.x0) * sx, py = y => cv.height - (y - T.y0) * sy;
+  g.fillStyle = "#8f9a8f"; g.fillRect(0, 0, cv.width, cv.height);           // verge
+  let rnd = 7; const rand = () => (rnd = (rnd * 16807) % 2147483647) / 2147483647;
+  for (const s of T.surfaces) {
+    const ice = s.mu < 0.5;
+    g.save();
+    g.translate(px(s.x), py(s.y)); g.rotate(-(s.angle || 0));
+    const w = (s.w || 2 * s.r) * sx, h = (s.h || 2 * s.r) * sy;
+    g.fillStyle = ice ? "#d4e6ef" : "#4a4f53";
+    if (s.shape === "disc") { g.beginPath(); g.arc(0, 0, s.r * sx, 0, 7); g.fill(); } else g.fillRect(-w / 2, -h / 2, w, h);
+    const n = Math.round(w * h / (ice ? 90 : 14));
+    for (let i = 0; i < n; i++) {                                              // speckle
+      g.fillStyle = ice ? `rgba(255,255,255,${0.3 + 0.5 * rand()})` : `rgba(${rand() < 0.5 ? "30,33,36" : "105,110,113"},0.22)`;
+      g.fillRect((rand() - 0.5) * w, (rand() - 0.5) * h, ice ? 4 : 1, ice ? 2 : 1);
+    }
+    if (ice) { g.strokeStyle = "rgba(60,120,150,0.55)"; g.lineWidth = 3; g.strokeRect(-w / 2, -h / 2, w, h); }
+    g.restore();
+  }
+  g.strokeStyle = "rgba(255,255,255,0.9)";
+  const x0 = T.x0, x1 = T.x0 + wM;
+  const ys = lanes.map(l => l.y).sort((a, b) => a - b);
+  const bounds = [];
+  for (let i = 0; i < ys.length; i++) {
+    if (i === 0) bounds.push(ys[0] - (ys.length > 1 ? (ys[1] - ys[0]) / 2 : 2.5));
+    bounds.push(i + 1 < ys.length ? (ys[i] + ys[i + 1]) / 2 : ys[i] + (ys.length > 1 ? (ys[i] - ys[i - 1]) / 2 : 2.5));
+  }
+  bounds.forEach((y, i) => {
+    g.lineWidth = 0.15 * sy;
+    g.setLineDash(i === 0 || i === bounds.length - 1 ? [] : [3 * sx, 6 * sx]);
+    g.beginPath(); g.moveTo(px(x0), py(y)); g.lineTo(px(x1), py(y)); g.stroke();
+  });
+  g.setLineDash([]);
+  for (const m of markers) {
+    g.strokeStyle = "rgba(240,180,40,0.95)"; g.lineWidth = 0.5 * sx;
+    g.beginPath(); g.moveTo(px(m.x), py(bounds[0])); g.lineTo(px(m.x), py(bounds[bounds.length - 1])); g.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
+}
+
+function buildTerrain(T, lanes, markers) {
+  const geo = new THREE.BufferGeometry();
+  const n = T.nx * T.ny, pos = new Float32Array(n * 3), uv = new Float32Array(n * 2);
+  for (let j = 0; j < T.ny; j++) for (let i = 0; i < T.nx; i++) {
+    const k = j * T.nx + i;
+    pos.set([T.x0 + i * T.spacing, T.y0 + j * T.spacing, T.z[k]], 3 * k);
+    uv.set([i / (T.nx - 1), j / (T.ny - 1)], 2 * k);
+  }
+  const idx = [];
+  for (let j = 0; j < T.ny - 1; j++) for (let i = 0; i < T.nx - 1; i++) {
+    const a = j * T.nx + i;                       // same diagonal as the physics mesh
+    idx.push(a, a + 1, a + T.nx + 1, a, a + T.nx + 1, a + T.nx);
+  }
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: terrainTexture(T, lanes, markers), roughness: 0.92 }));
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+  heightAt = (x, y) => {
+    const u = Math.min(Math.max((x - T.x0) / T.spacing, 0), T.nx - 1.001), v = Math.min(Math.max((y - T.y0) / T.spacing, 0), T.ny - 1.001);
+    const i = Math.floor(u), j = Math.floor(v), fu = u - i, fv = v - j, z = (a, b) => T.z[(j + b) * T.nx + i + a];
+    return (1 - fu) * (1 - fv) * z(0, 0) + fu * (1 - fv) * z(1, 0) + fu * fv * z(1, 1) + (1 - fu) * fv * z(0, 1);
+  };
+}
+
+function buildCar(S) {
+  // Visual shell over the physics collision boxes (chassis + cabin) and the four wheel anchors.
+  const root = new THREE.Group(), paint = new THREE.Color(...S.color);
+  const body = new THREE.MeshStandardMaterial({ color: paint, roughness: 0.38, metalness: 0.25 });
+  const dark = new THREE.MeshStandardMaterial({ color: 0x1b2024, roughness: 0.55 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0x3d5361, roughness: 0.12, metalness: 0.5 });
+  const add = (geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; root.add(m); return m; };
+  const L = S.length, Wd = S.width, bh = S.body_height;
+  add(new THREE.BoxGeometry(L, Wd, bh), body, 0, 0, 0);
+  add(new THREE.BoxGeometry(L * 1.002, Wd * 1.002, 0.08), dark, 0, 0, -bh / 2 + 0.04);          // rocker strip
+  const cab = add(new THREE.BoxGeometry(L * 0.48, Wd * 0.86, 0.5), glass, -0.25, 0, bh / 2 + 0.25);
+  add(new THREE.BoxGeometry(L * 0.40, Wd * 0.80, 0.05), body, -0.25, 0, bh / 2 + 0.52);           // roof
+  const lamp = (c, x, y) => add(new THREE.BoxGeometry(0.05, 0.32, 0.1), new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.9 }), x, y, bh * 0.2);
+  for (const s of [1, -1]) { lamp(0xfff6d8, L / 2 + 0.01, s * Wd * 0.33); lamp(0xd8202a, -L / 2 - 0.01, s * Wd * 0.33); }
+  const wheels = S.anchors.map((a, i) => {
+    const hub = new THREE.Group(); hub.position.set(a[0], a[1], a[2]); root.add(hub);
+    const spin = new THREE.Group(); hub.add(spin);
+    const tyre = new THREE.Mesh(new THREE.CylinderGeometry(S.radius, S.radius, 0.26, 32), dark);
+    tyre.castShadow = true; spin.add(tyre);                                   // cylinder axis = local y = axle
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(S.radius * 0.62, S.radius * 0.62, 0.27, 6),
+      new THREE.MeshStandardMaterial({ color: 0xc9ced1, metalness: 0.7, roughness: 0.3 }));
+    spin.add(rim);
+    const spoke = new THREE.Mesh(new THREE.BoxGeometry(S.radius * 1.5, 0.275, 0.07), new THREE.MeshStandardMaterial({ color: 0x5c6468 }));
+    spin.add(spoke);
+    return { hub, spin, anchor: a };
+  });
+  scene.add(root);
+  return { root, wheels, S };
+}
+
+function pose(car, c) {
+  const [x, y, z, qx, qy, qz, qw] = c.p;
+  car.root.position.set(x, y, z);
+  car.root.quaternion.set(qx, qy, qz, qw);
+  car.wheels.forEach((w, i) => {
+    w.hub.position.set(w.anchor[0], w.anchor[1], w.anchor[2] - c.susp[i]);
+    w.hub.rotation.set(0, 0, c.steer[i]);
+    w.spin.rotation.set(0, c.spin[i], 0);
+  });
+}
+
+const smooth = { pos: null, look: null };
+function placeCamera(f, dt) {
+  const ps = f.cars.map(c => new THREE.Vector3(...c.p.slice(0, 3)));
+  const mean = ps.reduce((a, b) => a.add(b), new THREE.Vector3()).multiplyScalar(1 / ps.length);
+  let pos, look;
+  if (D.camera.mode === "overview") {
+    // Fit every car (plus margin) in a fixed rear-left-above view direction.
+    const box = new THREE.Box3().setFromPoints(ps).expandByScalar(5);
+    look = box.getCenter(new THREE.Vector3()); look.z = 0;
+    const r = 0.5 * Math.hypot(box.max.x - box.min.x, box.max.y - box.min.y);
+    const dist = Math.max(r / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), 45);
+    pos = look.clone().add(new THREE.Vector3(-0.62, -0.42, 0.66).normalize().multiplyScalar(dist));
+  } else {
+    // Side-chase that widens with the gap between the cars, so both stay in frame.
+    const sep = Math.max(...ps.map(p => p.x)) - Math.min(...ps.map(p => p.x));
+    look = mean.clone().add(new THREE.Vector3(2, 0, 0.4));
+    pos = mean.clone().add(new THREE.Vector3(-9 - 0.15 * sep, -15 - 0.75 * sep, 4.5 + 0.2 * sep));
+  }
+  if (!smooth.pos || dt === 0) { smooth.pos = pos; smooth.look = look; }
+  const a = 1 - Math.exp(-dt / 0.6);
+  smooth.pos.lerp(pos, a); smooth.look.lerp(look, a);
+  camera.position.copy(smooth.pos); camera.lookAt(smooth.look);
+  sun.position.copy(smooth.look).add(new THREE.Vector3(-30, -40, 70)); sun.target.position.copy(smooth.look);
+  const sc = sun.shadow.camera, r = D.camera.mode === "overview" ? 90 : 40;
+  sc.left = -r; sc.right = r; sc.top = r; sc.bottom = -r; sc.far = 250; sc.updateProjectionMatrix();
+}
+
+function label(f) {
+  f.cars.forEach((c, i) => {
+    const v = new THREE.Vector3(...c.p.slice(0, 3)).add(new THREE.Vector3(0, 0, 1.9)).project(camera);
+    const el = tags[i];
+    el.style.left = `${(v.x + 1) / 2 * W}px`; el.style.top = `${(1 - v.y) / 2 * H}px`;
+    let txt = `${Math.max(0, c.kmh).toFixed(0).padStart(2, " ")} km/h`;
+    if (D.show_wheel_speed) {                       // driven-wheel surface speed reveals wheelspin
+      const S = D.specs[i], driven = S.awd ? [0, 1, 2, 3] : [2, 3];
+      const ws = driven.reduce((a, j) => a + c.omega[j], 0) / driven.length * S.radius * 3.6;
+      txt += ` · wheels ${Math.max(0, ws).toFixed(0)} km/h`;
+    }
+    el.querySelector("span").textContent = txt;
+  });
+}
+
+let last = null;
+window.__demo = {
+  load(data) {
+    D = data;
+    buildTerrain(D.terrain, D.lanes, D.markers);
+    cars = D.specs.map(buildCar);
+    // Lane labels follow lateral order of the start positions.
+    const order = D.frames[0].cars.map(c => c.p[1]);
+    tags = D.frames[0].cars.map((c, i) => {
+      const lane = D.lanes.reduce((b, l) => Math.abs(l.y - order[i]) < Math.abs(b.y - order[i]) ? l : b);
+      const el = document.createElement("div"); el.className = "tag";
+      el.innerHTML = `<b>${lane.label}</b><span></span>`;
+      document.body.appendChild(el); return el;
+    });
+    return { n: D.frames.length, hz: D.hz };
+  },
+  frame(k) {
+    const f = D.frames[Math.min(k, D.frames.length - 1)];
+    f.cars.forEach((c, i) => pose(cars[i], c));
+    placeCamera(f, last === null ? 0 : 1 / D.hz);
+    last = k;
+    renderer.render(scene, camera);
+    label(f);
+    document.getElementById("clock").textContent = `t = ${f.t.toFixed(1)} s`;
+  },
+};
+window.__ready = true;
+</script>
+</body>
+</html>

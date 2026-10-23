@@ -5,18 +5,28 @@
   <meta name="description" content="SceneFactory-3D is a GPU-batched, physics-grounded multi-agent driving simulator that runs matched physical counterfactuals: the same traffic scene and controllers on roads that differ only in friction and grade.">
   <meta name="keywords" content="SceneFactory-3D, SceneFactory, driving simulation, physical counterfactuals, tire forces, road friction, road grade, Isaac Lab, Newton, GPU simulation, multi-agent, PPO">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#ffffff">
   <meta property="og:type" content="website">
   <meta property="og:title" content="SceneFactory-3D — Lifting 2D Traffic Scenes into 3D Physical Counterfactuals">
   <meta property="og:description" content="Same scene, same controllers, different road: matched physical counterfactuals for many interacting vehicles on one GPU.">
   <meta property="og:image" content="assets/images/cover.jpg">
+  <meta name="citation_title" content="SceneFactory-3D: Lifting 2D Traffic Scenes into 3D Physical Counterfactuals for Scalable Physically Grounded Safety Evaluation">
+  <meta name="citation_author" content="Zhu, Yicheng">
+  <meta name="citation_author" content="Tian, Linfeng">
+  <meta name="citation_author" content="Zhao, Tianmu">
+  <meta name="citation_author" content="Chen, Yang">
+  <meta name="citation_author" content="Zuo, Fan">
+  <meta name="citation_author" content="Li, Tao">
+  <meta name="citation_author" content="Bian, Zilin">
+  <meta name="citation_publication_date" content="2026/10/02">
+  <meta name="citation_arxiv_id" content="2610.02874">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2610.02874">
   <title>SceneFactory-3D: 3D Physical Counterfactuals for Traffic Scenes</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css?v=20261002a">
+  <link rel="stylesheet" href="./static/css/index.css?v=20261023a">
   <link rel="icon" href="./assets/images/favicon.svg" type="image/svg+xml">
 
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -37,6 +47,7 @@
       <div class="navbar-end">
         <a class="navbar-item" href="#abstract">Abstract</a>
         <a class="navbar-item" href="#simulator">Simulator</a>
+        <a class="navbar-item" href="#vehicles">Vehicles</a>
         <a class="navbar-item" href="#benchmark">Benchmark</a>
         <a class="navbar-item" href="#results">Results</a>
         <a class="navbar-item" href="#scope">Scope</a>
@@ -55,18 +66,33 @@
             <p class="publication-kicker">Physics-grounded multi-agent driving simulation</p>
             <h1 class="title is-1 publication-title"><span class="sf3d title-project">SceneFactory-3D:</span> <span class="title-description">Lifting 2D Traffic Scenes into 3D Physical Counterfactuals for Scalable Physically Grounded Safety Evaluation</span></h1>
 
-            <!-- TODO: replace with the author list and affiliations once the paper is de-anonymized. -->
             <div class="is-size-5 publication-authors named-authors">
-              <span class="author-block">Anonymous authors</span>
+              <span class="author-block">Yicheng Zhu<sup>1</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Linfeng Tian<sup>2</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Tianmu Zhao<sup>3</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Yang Chen<sup>1</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Fan Zuo<sup>3</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Tao Li<sup>2</sup></span><span class="author-separator">,</span>
+              <span class="author-block">Zilin Bian<sup>*1</sup></span>
             </div>
-            <div class="publication-corresponding">Under double-blind review.</div>
+            <div class="publication-affiliations" aria-label="Author affiliations">
+              <span><sup>1</sup> Rochester Institute of Technology</span>
+              <span><sup>2</sup> City University of Hong Kong</span>
+              <span><sup>3</sup> New York University</span>
+            </div>
+            <div class="publication-corresponding"><sup>*</sup> Corresponding author: <a href="mailto:zxbite@rit.edu">zxbite@rit.edu</a></div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
                 <span class="link-block">
-                  <span class="button is-normal is-rounded is-light disabled-link" aria-disabled="true">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper coming soon</span>
-                  </span>
+                  <a href="https://arxiv.org/pdf/2610.02874" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2610.02874" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
+                  </a>
                 </span>
                 <span class="link-block">
                   <a href="#results" class="external-link button is-normal is-rounded is-dark">
@@ -74,9 +100,14 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <span class="button is-normal is-rounded is-light disabled-link" aria-disabled="true">
-                    <span class="icon"><i class="fab fa-github"></i></span><span>Code coming soon</span>
-                  </span>
+                  <a href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#vehicles" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-car"></i></span><span>Vehicle demos</span>
+                  </a>
                 </span>
                 <span class="link-block">
                   <a href="https://arxiv.org/abs/2605.08528" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
@@ -129,7 +160,7 @@
           <div class="content has-text-justified abstract-copy">
             <p>Scalable driving simulators typically execute vehicle commands using prescribed behavioral or kinematic rules, overlooking the physics of tire&ndash;road interfaces, thereby limiting their ability to capture how adverse road and environmental conditions alter vehicle execution and propagate through traffic.</p>
             <p>To address this limitation, we present <span class="sf3d">SceneFactory-3D</span>, a GPU-batched, physics-grounded multi-agent driving simulator. Vehicles execute acceleration and steering commands via suspension- and friction-limited forces evaluated at each wheel-contact point. Spatially varying friction, per-world 3D heightfields, gravity, and rigid contact consistently govern wheel motion and chassis collisions. Per-world terrain isolation and GPU batching enable SceneFactory-3D to run matched physical counterfactuals in parallel: traffic scenario setup and vehicle controllers remain fixed while only the road condition changes, enabling the resulting closed-loop effects to be evaluated across parallel worlds.</p>
-            <p>To demonstrate the advantage of SceneFactory-3D-enabled counterfactual evaluation, we conduct an empirical study on vehicle controllers' sensitivity to road conditions. We study three learned-policy families on 1,024 matched 12-vehicle worlds per condition, and two classical planners on a shared 32-world subset, across 21 friction and grade conditions. When friction drops from 1.0 to 0.18, the share of vehicles that clear the work zone safely falls by 6 to 90 percentage points across learned policies (18&ndash;19 for classical planners), and near-collision situations become more frequent for every learned policy.</p>
+            <p>To demonstrate the advantage of the SceneFactory-3D-enabled counterfactual evaluation, we conduct an empirical study on vehicle controllers' sensitivity to road conditions. We study three learned-policy families on 1,024 matched 12-vehicle worlds per condition, and two classical planners on a shared 32-world subset, across 21 friction and grade conditions. When friction drops from 1.0 to 0.18, the share of vehicles that clear the work zone safely falls by 6 to 90 percentage points across learned policies (18&ndash;19 for classical planners), and near-collision situations become more frequent for every learned policy.</p>
           </div>
         </div>
       </div>
@@ -200,6 +231,94 @@
         <div class="spec-item"><strong>Road</strong><span>Per-world heightfields plus friction patches (discs or rotated rectangles); later patches take precedence.</span></div>
         <div class="spec-item"><strong>Control</strong><span>60&nbsp;Hz actuation through one shared bridge; controllers may decide less often and hold their commands.</span></div>
       </div>
+    </div>
+  </section>
+
+  <section class="section vehicles-section" id="vehicles">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">The Vehicles</h2>
+          <p class="subtitle">Two vehicle models ship with the simulator. The benchmark fleet uses the Astra GT for all twelve vehicles; the Astra Trail is available for new scenarios.</p>
+        </div>
+      </div>
+
+      <div class="vehicle-grid">
+        <div class="vehicle-card">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#0a7abf"></span><h3 class="title is-4">Astra GT</h3><span class="resource-status">Rear-wheel drive</span></div>
+          <p>Light rear-driven car; the model used for every vehicle in the paper's benchmark.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>1,400&nbsp;kg</dd>
+            <dt>Length &times; width</dt><dd>4.25 &times; 1.78&nbsp;m</dd>
+            <dt>Wheelbase / track</dt><dd>2.62 / 1.54&nbsp;m</dd>
+            <dt>Wheel radius</dt><dd>0.32&nbsp;m</dd>
+            <dt>Suspension travel</dt><dd>0.38&nbsp;m</dd>
+            <dt>Spring / damper</dt><dd>34&nbsp;kN/m / 3.4&nbsp;kN&middot;s/m</dd>
+            <dt>Drive torque / power</dt><dd>2,200&nbsp;N&middot;m / 135&nbsp;kW</dd>
+            <dt>Brake torque</dt><dd>1,800&nbsp;N&middot;m per wheel</dd>
+            <dt>Tire grip &mu;<sub>vehicle</sub></dt><dd>1.05</dd>
+            <dt>Steering limit</dt><dd>0.55&nbsp;rad</dd>
+          </dl>
+        </div>
+        <div class="vehicle-card">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#e05c14"></span><h3 class="title is-4">Astra Trail</h3><span class="resource-status">All-wheel drive</span></div>
+          <p>Heavier, taller all-wheel-drive SUV with longer suspension travel and lower tire grip.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>2,100&nbsp;kg</dd>
+            <dt>Length &times; width</dt><dd>4.65 &times; 1.98&nbsp;m</dd>
+            <dt>Wheelbase / track</dt><dd>2.85 / 1.70&nbsp;m</dd>
+            <dt>Wheel radius</dt><dd>0.41&nbsp;m</dd>
+            <dt>Suspension travel</dt><dd>0.55&nbsp;m</dd>
+            <dt>Spring / damper</dt><dd>38&nbsp;kN/m / 4.5&nbsp;kN&middot;s/m</dd>
+            <dt>Drive torque / power</dt><dd>3,400&nbsp;N&middot;m / 165&nbsp;kW</dd>
+            <dt>Brake torque</dt><dd>2,300&nbsp;N&middot;m per wheel</dd>
+            <dt>Tire grip &mu;<sub>vehicle</sub></dt><dd>0.92</dd>
+            <dt>Steering limit</dt><dd>0.60&nbsp;rad</dd>
+          </dl>
+        </div>
+      </div>
+      <p class="table-note has-text-centered">Parameters from <code>astra_drive/vehicle.py</code> in the code release. Drive torque is the total at the driven wheels.</p>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 1 &middot; friction</p>
+        <h3 class="title is-4">Emergency Stop on Dry vs. Icy Asphalt</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/brake.jpg?v=20261023">
+              <source src="assets/videos/vehicles/brake.mp4?v=20261023" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Four copies of the same manoeuvre: 60&nbsp;km/h, then at the yellow line 0.8 brake with a left&ndash;right swerve, with identical inputs and timing for every car. Only the friction under the second car of each pair changes (&mu;<sub>surface</sub> 1.0 &rarr; 0.18). On dry asphalt the GT stops in 14.5&nbsp;m and the Trail in 18.6&nbsp;m, both moving sideways with the swerve. On ice the braked wheels lock, the swerve produces no lateral motion, and the cars slide 72&nbsp;m and 82&nbsp;m.</figcaption>
+        </figure>
+      </article>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 2 &middot; drivetrain and grade</p>
+        <h3 class="title is-4">Hill Start on an Icy +8% Grade</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/grade.jpg?v=20261023">
+              <source src="assets/videos/vehicles/grade.mp4?v=20261023" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Both cars release the brake on a +8% grade at &mu;<sub>surface</sub> 0.25 and apply the same half throttle. Labels show ground speed and the driven wheels' surface speed. The all-wheel-drive Trail spreads the traction demand over four tires and climbs with almost no slip, reaching 29&nbsp;km/h after 8&nbsp;s. The rear-driven GT spins its rear wheels at about 126&nbsp;km/h of surface speed and reaches only 13&nbsp;km/h.</figcaption>
+        </figure>
+      </article>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 3 &middot; terrain</p>
+        <h3 class="title is-4">Rolling Heightfield at 45&nbsp;km/h</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hills.jpg?v=20261023">
+              <source src="assets/videos/vehicles/hills.mp4?v=20261023" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Both cars hold 45&nbsp;km/h in their lanes over an undulating dry heightfield. Each wheel's ray finds its own contact, so the four spring&ndash;damper loads differ and the body pitches by up to 10&deg; and rolls by up to 6&deg;. Suspension compresses by up to 0.21&nbsp;m on the GT and 0.32&nbsp;m on the Trail.</figcaption>
+        </figure>
+      </article>
+
+      <p class="table-note has-text-centered">All three are hand-authored vehicle demonstrations, not benchmark episodes. They were simulated with the released NumPy vehicle reference (<code>astra_drive/vehicle.py</code>, <code>physics.py</code>; the batched GPU kernel is regression-tested against it) at 240&nbsp;Hz and rendered offline; bodies are drawn over the physics collision boxes. Scripts are in <code>tools/vehicle_demos/</code>.</p>
     </div>
   </section>
 
@@ -374,13 +493,13 @@
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Release and Scope</h2>
-          <p class="subtitle">What will be released, and the limits of this study.</p>
+          <p class="subtitle">What is released in the <a href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener">code repository</a> (MIT license), and the limits of this study.</p>
         </div>
       </div>
 
       <div class="resource-grid">
         <div class="resource-card">
-          <span class="resource-status is-pending">Release pending</span>
+          <span class="resource-status">Released</span>
           <h3 class="title is-4">Simulator</h3>
           <p>The batched vehicle and road model on Isaac Lab and Newton.</p>
           <ul>
@@ -391,7 +510,7 @@
           </ul>
         </div>
         <div class="resource-card">
-          <span class="resource-status is-pending">Release pending</span>
+          <span class="resource-status">Released</span>
           <h3 class="title is-4">Benchmark</h3>
           <p>The lane-closure task and the frozen 21-condition matrix.</p>
           <ul>
@@ -401,7 +520,7 @@
           </ul>
         </div>
         <div class="resource-card">
-          <span class="resource-status is-pending">Release pending</span>
+          <span class="resource-status">Released</span>
           <h3 class="title is-4">Controllers</h3>
           <p>All evaluated controller regimes.</p>
           <ul>
@@ -434,15 +553,16 @@
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <div class="bib-heading"><h2 class="title">BibTeX</h2><button class="button is-small is-rounded" type="button" id="copy-bibtex">Copy</button></div>
-      <pre><code id="bibtex-code">@article{scenefactory3d2026,
-  title   = {SceneFactory-3D: Lifting 2D Traffic Scenes into 3D Physical
+      <pre><code id="bibtex-code">@article{zhu2026scenefactory3d,
+  title   = {{SceneFactory-3D}: Lifting {2D} Traffic Scenes into {3D} Physical
              Counterfactuals for Scalable Physically Grounded Safety
              Evaluation},
-  author  = {Anonymous},
-  journal = {Under review},
-  year    = {2026}
+  author  = {Zhu, Yicheng and Tian, Linfeng and Zhao, Tianmu and Chen, Yang
+             and Zuo, Fan and Li, Tao and Bian, Zilin},
+  journal = {arXiv preprint arXiv:2610.02874},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2610.02874}
 }</code></pre>
-      <p class="bib-note">Authors, venue and publication details will be updated after review.</p>
     </div>
   </section>
 </main>
@@ -450,8 +570,8 @@
 <footer class="footer">
   <div class="container">
     <div class="content has-text-centered footer-links">
-      <span class="icon-link is-disabled" aria-label="Paper not yet released"><i class="fas fa-file-pdf"></i></span>
-      <span class="icon-link is-disabled" aria-label="Code not yet released"><i class="fab fa-github"></i></span>
+      <a class="icon-link" href="https://arxiv.org/pdf/2610.02874" target="_blank" rel="noopener" aria-label="Paper PDF on arXiv"><i class="fas fa-file-pdf"></i></a>
+      <a class="icon-link" href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener" aria-label="Code on GitHub"><i class="fab fa-github"></i></a>
     </div>
     <div class="columns is-centered">
       <div class="column is-8">

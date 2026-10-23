@@ -15,10 +15,9 @@ python3 -m http.server 8000
 
 ## Publication status
 
-- The paper is under double-blind review: authors are shown as "Anonymous authors" and no PDF is linked.
-- Search indexing is disabled with `noindex, nofollow`.
-- Code and paper links are "coming soon" placeholders.
-- Do not enable GitHub Pages until the release decision is made.
+- Paper: [arXiv:2610.02874](https://arxiv.org/abs/2610.02874) (v2, 13 Oct 2026). The page shows the arXiv author list, the arXiv BibTeX and Google Scholar `citation_*` meta tags.
+- Code: [SmallWorldLab/SceneFactory_3D](https://github.com/SmallWorldLab/SceneFactory_3D) (`main`, MIT).
+- Search indexing is enabled (the `noindex` tag was removed).
 
 See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 
@@ -28,7 +27,22 @@ See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 |---|---|
 | `#abstract` | Abstract + overview figure (paper Fig. 1) |
 | `#simulator` | Four mechanism cards, tire-force equation, spec strip |
+| `#vehicles` | Spec cards for the two released vehicle models + three demo videos |
 | `#benchmark` | Pipeline figure (paper Fig. 2), task, conditions, controller table |
 | `#results` | Headline table, friction / grade / scaling figures, findings |
 | `#scope` | Release plan and limitations |
-| `#BibTeX` | Citation placeholder |
+| `#BibTeX` | arXiv citation |
+
+## Vehicle demos
+
+`tools/vehicle_demos/` regenerates the three clips in `#vehicles` from the code release:
+
+```bash
+# Python env with newton, warp and playwright (e.g. astraexplore/.venv); CPU only
+python tools/vehicle_demos/simulate.py --release ~/Github/scenefactory3d   # -> tools/vehicle_demos/logs/*.json
+python tools/vehicle_demos/render.py                                       # -> assets/videos/vehicles, assets/images/vehicles
+```
+
+`simulate.py` drives the release's `DrivingPhysics` (NumPy vehicle reference, 240 Hz) unchanged; `render.py` draws each
+logged frame with `render.html` (three.js 0.160 from jsDelivr) in headless Chrome and encodes H.264. Captions quote
+numbers from the logs; re-check them after re-simulating.
