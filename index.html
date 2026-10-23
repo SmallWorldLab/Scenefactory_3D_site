@@ -467,7 +467,7 @@
         </figure>
       </article>
 
-      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>.</p>
+      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>. The same vehicles also run batched on the GPU, many parallel worlds with one thread per vehicle: 16,384 worlds advance 52&nbsp;million Coupe steps, 25&nbsp;million Hauler steps or 11&nbsp;million steps of the Pickup with three crates per second on one workstation GPU. For the Coupe and Crossover the GPU version computes the same formulas as the released GPU kernel.</p>
     </div>
   </section>
 
