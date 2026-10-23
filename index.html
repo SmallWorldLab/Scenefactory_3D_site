@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css?v=20261023a">
+  <link rel="stylesheet" href="./static/css/index.css?v=20261023b">
   <link rel="icon" href="./assets/images/favicon.svg" type="image/svg+xml">
 
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -239,14 +239,15 @@
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">The Vehicles</h2>
-          <p class="subtitle">Two vehicle models ship with the simulator. The benchmark fleet uses the Astra GT for all twelve vehicles; the Astra Trail is available for new scenarios.</p>
+          <p class="subtitle">The paper&rsquo;s benchmark uses the SF3D Coupe for all twelve vehicles. The same wheel model now also drives a crossover, an articulated 18-wheeler and three road robots.</p>
         </div>
       </div>
 
+      <h3 class="title is-5 vehicle-group-title">In the paper&rsquo;s code release</h3>
       <div class="vehicle-grid">
         <div class="vehicle-card">
-          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#0a7abf"></span><h3 class="title is-4">Astra GT</h3><span class="resource-status">Rear-wheel drive</span></div>
-          <p>Light rear-driven car; the model used for every vehicle in the paper's benchmark.</p>
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#0a7abf"></span><h3 class="title is-4">SF3D Coupe</h3><span class="resource-status">Rear-wheel drive</span></div>
+          <p>Light rear-driven car; the model used for every vehicle in the paper&rsquo;s benchmark.</p>
           <dl class="vehicle-specs">
             <dt>Mass</dt><dd>1,400&nbsp;kg</dd>
             <dt>Length &times; width</dt><dd>4.25 &times; 1.78&nbsp;m</dd>
@@ -261,8 +262,8 @@
           </dl>
         </div>
         <div class="vehicle-card">
-          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#e05c14"></span><h3 class="title is-4">Astra Trail</h3><span class="resource-status">All-wheel drive</span></div>
-          <p>Heavier, taller all-wheel-drive SUV with longer suspension travel and lower tire grip.</p>
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#e05c14"></span><h3 class="title is-4">SF3D Crossover</h3><span class="resource-status">All-wheel drive</span></div>
+          <p>Heavier, taller all-wheel-drive crossover with longer suspension travel and lower tire grip.</p>
           <dl class="vehicle-specs">
             <dt>Mass</dt><dd>2,100&nbsp;kg</dd>
             <dt>Length &times; width</dt><dd>4.65 &times; 1.98&nbsp;m</dd>
@@ -277,18 +278,73 @@
           </dl>
         </div>
       </div>
-      <p class="table-note has-text-centered">Parameters from <code>astra_drive/vehicle.py</code> in the code release. Drive torque is the total at the driven wheels.</p>
+      <p class="table-note has-text-centered">Parameters from <code>astra_drive/vehicle.py</code> in the code release, where the Coupe is <code>VEHICLES[0]</code> and the Crossover <code>VEHICLES[1]</code>. Drive torque is the total at the driven wheels.</p>
+
+      <h3 class="title is-5 vehicle-group-title">Extended vehicle family <span class="resource-status is-pending">Beyond the paper</span></h3>
+      <p class="vehicle-group-note">Each new vehicle reuses the v1 wheel model unchanged, generalized to any number of axles, dual tires, a fifth-wheel trailer joint and skid steering. A larger tire acts as several v1 tires in parallel. These models are not part of the paper&rsquo;s experiments or its release; their code is on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>.</p>
+      <div class="vehicle-grid is-compact">
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#b81a1f"></span><h3 class="title is-4">SF3D Hauler</h3><span class="resource-status">Articulated</span></div>
+          <p>Loaded 18-wheeler: a tractor with tandem drive axles pulling a 53&nbsp;ft trailer on a fifth-wheel joint.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>36,000&nbsp;kg (9.0 + 27.0&nbsp;t)</dd>
+            <dt>Overall length</dt><dd>21.3&nbsp;m</dd>
+            <dt>Tires / axles</dt><dd>18 / 5, duals on 4 axles</dd>
+            <dt>Static axle loads</dt><dd>5.4 / 16.8 / 13.8&nbsp;t</dd>
+            <dt>Tractor wheelbase</dt><dd>5.8&nbsp;m</dd>
+            <dt>Kingpin to trailer tandem</dt><dd>13.45&nbsp;m</dd>
+            <dt>Drive torque / power</dt><dd>60&nbsp;kN&middot;m / 330&nbsp;kW</dd>
+            <dt>Tire grip &mu;<sub>vehicle</sub></dt><dd>0.82</dd>
+          </dl>
+        </div>
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#26a08c"></span><h3 class="title is-4">SF3D Courier</h3><span class="resource-status">Skid steer</span></div>
+          <p>Six-wheel sidewalk delivery robot; turns by driving its two sides at different speeds.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>35&nbsp;kg with parcel</dd>
+            <dt>Length &times; width</dt><dd>0.73 &times; 0.50&nbsp;m</dd>
+            <dt>Tires / axles</dt><dd>6 / 3</dd>
+            <dt>Wheel radius</dt><dd>0.10&nbsp;m</dd>
+            <dt>Drive torque / power</dt><dd>30&nbsp;N&middot;m / 450&nbsp;W</dd>
+            <dt>Cruise speed</dt><dd>6&nbsp;km/h</dd>
+          </dl>
+        </div>
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#fa6b10"></span><h3 class="title is-4">SF3D Cone Bot</h3><span class="resource-status">Skid steer</span></div>
+          <p>A traffic cone on a powered four-wheel base that drives itself into position.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>12&nbsp;kg</dd>
+            <dt>Base</dt><dd>0.46 &times; 0.46&nbsp;m, cone 0.70&nbsp;m tall</dd>
+            <dt>Tires / axles</dt><dd>4 / 2</dd>
+            <dt>Wheel radius</dt><dd>0.065&nbsp;m</dd>
+            <dt>Drive torque / power</dt><dd>4&nbsp;N&middot;m / 150&nbsp;W</dd>
+            <dt>Cruise speed</dt><dd>8&nbsp;km/h</dd>
+          </dl>
+        </div>
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#f2b814"></span><h3 class="title is-4">SF3D Barrier Bot</h3><span class="resource-status">Skid steer</span></div>
+          <p>Low, heavy robot carrying a lane-width crash-barrier panel that it drives into place to close a lane.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass</dt><dd>1,500&nbsp;kg</dd>
+            <dt>Panel</dt><dd>3.2&nbsp;m wide, 1.9&nbsp;m tall</dd>
+            <dt>Tires / axles</dt><dd>4 / 2</dd>
+            <dt>Wheel radius</dt><dd>0.30&nbsp;m</dd>
+            <dt>Drive torque / power</dt><dd>1,800&nbsp;N&middot;m / 18&nbsp;kW</dd>
+            <dt>Cruise speed</dt><dd>7&nbsp;km/h</dd>
+          </dl>
+        </div>
+      </div>
 
       <article class="result-block">
         <p class="result-kicker">Demo 1 &middot; friction</p>
         <h3 class="title is-4">Emergency Stop on Dry vs. Icy Asphalt</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/brake.jpg?v=20261023">
-              <source src="assets/videos/vehicles/brake.mp4?v=20261023" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/brake.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/brake.mp4?v=20261023b" type="video/mp4">
             </video>
           </div>
-          <figcaption>Four copies of the same manoeuvre: 60&nbsp;km/h, then at the yellow line 0.8 brake with a left&ndash;right swerve, with identical inputs and timing for every car. Only the friction under the second car of each pair changes (&mu;<sub>surface</sub> 1.0 &rarr; 0.18). On dry asphalt the GT stops in 14.5&nbsp;m and the Trail in 18.6&nbsp;m, both moving sideways with the swerve. On ice the braked wheels lock, the swerve produces no lateral motion, and the cars slide 72&nbsp;m and 82&nbsp;m.</figcaption>
+          <figcaption>Four copies of the same manoeuvre: 60&nbsp;km/h, then at the yellow line 0.8 brake with a left&ndash;right swerve, with identical inputs and timing for every car. Only the friction under the second car of each pair changes (&mu;<sub>surface</sub> 1.0 &rarr; 0.18). On dry asphalt the Coupe stops in 14.5&nbsp;m and the Crossover in 18.6&nbsp;m, both moving sideways with the swerve. On ice the braked wheels lock, the swerve produces no lateral motion, and the cars slide 72&nbsp;m and 82&nbsp;m.</figcaption>
         </figure>
       </article>
 
@@ -297,11 +353,11 @@
         <h3 class="title is-4">Hill Start on an Icy +8% Grade</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/grade.jpg?v=20261023">
-              <source src="assets/videos/vehicles/grade.mp4?v=20261023" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/grade.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/grade.mp4?v=20261023b" type="video/mp4">
             </video>
           </div>
-          <figcaption>Both cars release the brake on a +8% grade at &mu;<sub>surface</sub> 0.25 and apply the same half throttle. Labels show ground speed and the driven wheels' surface speed. The all-wheel-drive Trail spreads the traction demand over four tires and climbs with almost no slip, reaching 29&nbsp;km/h after 8&nbsp;s. The rear-driven GT spins its rear wheels at about 126&nbsp;km/h of surface speed and reaches only 13&nbsp;km/h.</figcaption>
+          <figcaption>Both cars release the brake on a +8% grade at &mu;<sub>surface</sub> 0.25 and apply the same half throttle. Labels show ground speed and the driven wheels&rsquo; surface speed. The all-wheel-drive Crossover spreads the traction demand over four tires and climbs with almost no slip, reaching 29&nbsp;km/h after 8&nbsp;s. The rear-driven Coupe spins its rear wheels at about 126&nbsp;km/h of surface speed and reaches only 13&nbsp;km/h.</figcaption>
         </figure>
       </article>
 
@@ -310,15 +366,54 @@
         <h3 class="title is-4">Rolling Heightfield at 45&nbsp;km/h</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hills.jpg?v=20261023">
-              <source src="assets/videos/vehicles/hills.mp4?v=20261023" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hills.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/hills.mp4?v=20261023b" type="video/mp4">
             </video>
           </div>
-          <figcaption>Both cars hold 45&nbsp;km/h in their lanes over an undulating dry heightfield. Each wheel's ray finds its own contact, so the four spring&ndash;damper loads differ and the body pitches by up to 10&deg; and rolls by up to 6&deg;. Suspension compresses by up to 0.21&nbsp;m on the GT and 0.32&nbsp;m on the Trail.</figcaption>
+          <figcaption>Both cars hold 45&nbsp;km/h in their lanes over an undulating dry heightfield. Each wheel&rsquo;s ray finds its own contact, so the four spring&ndash;damper loads differ and the body pitches by up to 10&deg; and rolls by up to 6&deg;. Suspension compresses by up to 0.21&nbsp;m on the Coupe and 0.32&nbsp;m on the Crossover.</figcaption>
         </figure>
       </article>
 
-      <p class="table-note has-text-centered">All three are hand-authored vehicle demonstrations, not benchmark episodes. They were simulated with the released NumPy vehicle reference (<code>astra_drive/vehicle.py</code>, <code>physics.py</code>; the batched GPU kernel is regression-tested against it) at 240&nbsp;Hz and rendered offline; bodies are drawn over the physics collision boxes. Scripts are in <code>tools/vehicle_demos/</code>.</p>
+      <article class="result-block">
+        <p class="result-kicker">Demo 4 &middot; articulation</p>
+        <h3 class="title is-4">18-Wheeler Lane Change while Braking</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hauler.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/hauler.mp4?v=20261023b" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Three loaded Haulers run the same 72&nbsp;km/h lane change while braking. On dry road with all axles braked, the rig follows the lane change and stops in 35&nbsp;m. On &mu;<sub>surface</sub> 0.18 with the same braking, every wheel locks and no tire has lateral force left, so the rig slides straight and is still at 29&nbsp;km/h after 99&nbsp;m. On the same ice with only the tractor&rsquo;s drive axles locked, the steer and trailer axles keep their lateral grip and the drive axles lose theirs: the tractor swings around the fifth wheel and jackknifes until its cab meets the trailer at 124&deg;. Nothing in the model prescribes the jackknife.</figcaption>
+        </figure>
+      </article>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 5 &middot; road robots</p>
+        <h3 class="title is-4">Robots Deploy a Lane Closure</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/closure.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/closure.mp4?v=20261023b" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Five Cone Bots leave the shoulder one after another, drive into a 28&nbsp;m taper and pivot in place to face traffic; the Barrier Bot then closes the lane behind them. Every robot stops within 0.34&nbsp;m of its target. A Coupe in the closing lane merges left 28&nbsp;m before the taper and passes with a Crossover in the open lane. Robots and cars share one physics world and one wheel model; the robots follow simple waypoint controllers.</figcaption>
+        </figure>
+      </article>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 6 &middot; sidewalk</p>
+        <h3 class="title is-4">Courier on a Sidewalk Route</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/courier.jpg?v=20261023b">
+              <source src="assets/videos/vehicles/courier.mp4?v=20261023b" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>The six-wheel Courier drives a sidewalk route at up to 5.9&nbsp;km/h, stops and pivots in place at each corner, and takes a curb ramp 12&nbsp;cm down to the street. Each of the six wheels reads its own contact on the ramp.</figcaption>
+        </figure>
+      </article>
+
+      <p class="table-note has-text-centered">All six are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>.</p>
     </div>
   </section>
 

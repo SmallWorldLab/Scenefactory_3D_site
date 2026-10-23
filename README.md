@@ -27,7 +27,7 @@ See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 |---|---|
 | `#abstract` | Abstract + overview figure (paper Fig. 1) |
 | `#simulator` | Four mechanism cards, tire-force equation, spec strip |
-| `#vehicles` | Spec cards for the two released vehicle models + three demo videos |
+| `#vehicles` | Spec cards (2 released vehicles + 4 extended-family vehicles) and six demo videos |
 | `#benchmark` | Pipeline figure (paper Fig. 2), task, conditions, controller table |
 | `#results` | Headline table, friction / grade / scaling figures, findings |
 | `#scope` | Release plan and limitations |
@@ -35,14 +35,20 @@ See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 
 ## Vehicle demos
 
-`tools/vehicle_demos/` regenerates the three clips in `#vehicles` from the code release:
+`tools/vehicle_demos/` regenerates the six clips in `#vehicles`:
 
 ```bash
 # Python env with newton, warp and playwright (e.g. astraexplore/.venv); CPU only
-python tools/vehicle_demos/simulate.py --release ~/Github/scenefactory3d   # -> tools/vehicle_demos/logs/*.json
-python tools/vehicle_demos/render.py                                       # -> assets/videos/vehicles, assets/images/vehicles
+python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles   # -> tools/vehicle_demos/logs/*.json
+python tools/vehicle_demos/render.py                                          # -> assets/videos/vehicles, assets/images/vehicles
 ```
 
-`simulate.py` drives the release's `DrivingPhysics` (NumPy vehicle reference, 240 Hz) unchanged; `render.py` draws each
-logged frame with `render.html` (three.js 0.160 from jsDelivr) in headless Chrome and encodes H.264. Captions quote
-numbers from the logs; re-check them after re-simulating.
+`--code` points at a checkout of the astraexplore branch `vehicle-family`, whose
+`astra_drive/vehicle_family` extends the released v1 vehicle to N axles, dual tires, a fifth-wheel
+trailer and skid steering (bit-identical to v1 for the Coupe and Crossover; see its
+`VEHICLE_FAMILY.md`). `render.py` draws each logged frame with `render.html` (three.js 0.160 from
+jsDelivr) in headless Chrome and encodes H.264. Captions quote numbers from the logs; re-check them
+after re-simulating.
+
+Vehicle names on the page are display names: SF3D Coupe = release `VEHICLES[0]`, SF3D Crossover =
+`VEHICLES[1]`. The release code itself is frozen and keeps its own identifiers.

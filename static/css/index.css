@@ -1381,3 +1381,30 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+.vehicle-group-title {
+  margin: 2.2rem 0 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.vehicle-group-title .resource-status {
+  margin: 0;
+}
+
+.vehicle-group-note {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.vehicle-grid.is-compact {
+  margin-top: 1.1rem;
+}
+
+.vehicle-card.is-new .vehicle-specs {
+  font-size: 0.84rem;
+}
