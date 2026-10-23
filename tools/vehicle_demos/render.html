@@ -280,6 +280,7 @@ function label(f) {
       const ws = driven.reduce((a, j) => a + v.omega[j], 0) / driven.length * r * 3.6;
       txt += ` · wheels ${Math.max(0, ws).toFixed(0)} km/h`;
     }
+    if (v.note) txt += txt ? ` · ${v.note}` : v.note;
     el.querySelector("span").textContent = txt;
   });
   (D.group_labels || []).forEach((g, gi) => {

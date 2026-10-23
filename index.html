@@ -239,7 +239,7 @@
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">The Vehicles</h2>
-          <p class="subtitle">The paper&rsquo;s benchmark uses the SF3D Coupe for all twelve vehicles. The same wheel model now also drives a crossover, an articulated 18-wheeler and three road robots.</p>
+          <p class="subtitle">The paper&rsquo;s benchmark uses the SF3D Coupe for all twelve vehicles. The same wheel model now also drives a crossover, an articulated 18-wheeler, three road robots and a pickup with loose cargo.</p>
         </div>
       </div>
 
@@ -413,7 +413,61 @@
         </figure>
       </article>
 
-      <p class="table-note has-text-centered">All six are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>.</p>
+      <h3 class="title is-5 vehicle-group-title" id="cargo">Loose cargo <span class="resource-status is-pending">Beyond the paper</span></h3>
+      <p class="vehicle-group-note">The Pickup carries crates as separate rigid bodies in an open bed. Nothing ties a crate to the truck: it rests on the floor and pushes on the walls only through contact, so when it slides, tips or strikes a wall the force acts back on the chassis. Its mass layout and bed come from our multibody vehicle study, and the contact-solver settings it relies on were validated there, for example so that the full weight of three crates reaches the tires. The chassis runs on the same four v1 wheels as the other vehicles, with anti-roll bars added.</p>
+      <div class="vehicle-grid is-compact">
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#295c4d"></span><h3 class="title is-4">SF3D Pickup</h3><span class="resource-status">Cargo</span></div>
+          <p>Mid-size rear-drive pickup. Mass, center of mass and inertia are computed from five solid parts and four wheel corners.</p>
+          <dl class="vehicle-specs">
+            <dt>Mass (empty)</dt><dd>1,902&nbsp;kg</dd>
+            <dt>Cargo bed (inside)</dt><dd>1.80 &times; 1.56&nbsp;m, 0.5&nbsp;m walls</dd>
+            <dt>Wheelbase / track</dt><dd>3.2 / 1.65&nbsp;m</dd>
+            <dt>Wheel radius</dt><dd>0.38&nbsp;m</dd>
+            <dt>Anti-roll bars (front / rear)</dt><dd>30 / 8&nbsp;kN/m</dd>
+            <dt>Drive torque / power</dt><dd>3.6&nbsp;kN&middot;m / 190&nbsp;kW</dd>
+            <dt>Tire grip &mu;<sub>vehicle</sub></dt><dd>0.90</dd>
+          </dl>
+        </div>
+        <div class="vehicle-card is-new">
+          <div class="vehicle-head"><span class="vehicle-swatch" style="background:#a87a47"></span><h3 class="title is-4">Crates</h3><span class="resource-status">Free bodies</span></div>
+          <p>Any number of crates, each with its own mass, size and friction against the bed. Crates can sit side by side or be stacked. A crate that fills the bed is given 1&nbsp;mm of clearance.</p>
+          <dl class="vehicle-specs">
+            <dt>Single crate</dt><dd>300&nbsp;kg, 0.8 &times; 0.8 &times; 0.5&nbsp;m</dd>
+            <dt>Mixed load</dt><dd>250 + 120 + 40&nbsp;kg</dd>
+            <dt>Fitted crate</dt><dd>410&nbsp;kg, fills the bed</dd>
+            <dt>Crate&ndash;bed friction</dt><dd>&mu; 0.35</dd>
+          </dl>
+        </div>
+      </div>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 7 &middot; load shift</p>
+        <h3 class="title is-4">Hard Stop with Cargo in the Bed</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_stop.jpg?v=20261023c">
+              <source src="assets/videos/vehicles/cargo_stop.mp4?v=20261023c" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Three identical Pickups brake hard (0.85 pedal) from 72&nbsp;km/h at the yellow line. Only the cargo differs. The loose 300&nbsp;kg crate slides the full 0.5&nbsp;m to the front wall and hits it 0.43&nbsp;s after the brakes come on. In the mixed load the 250&nbsp;kg crate slides 1.22&nbsp;m and piles against the two lighter ones. The crate that fills the bed has nowhere to go and moves less than 1&nbsp;mm. Labels show how far the farthest crate has moved in the bed. All three trucks stop in 22&nbsp;m.</figcaption>
+        </figure>
+      </article>
+
+      <article class="result-block">
+        <p class="result-kicker">Demo 8 &middot; rollover</p>
+        <h3 class="title is-4">Fishhook at 50&nbsp;km/h: Same Payload, Loose or Fitted</h3>
+        <figure class="result-figure demo-figure">
+          <div class="video-frame">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_fishhook.jpg?v=20261023c">
+              <source src="assets/videos/vehicles/cargo_fishhook.mp4?v=20261023c" type="video/mp4">
+            </video>
+          </div>
+          <figcaption>Each truck coasts at 50&nbsp;km/h, steers full left at 0.5&nbsp;s, then full right at 1.4&nbsp;s, with identical inputs for all three. Empty, the Pickup tilts at most 4&deg;. With 410&nbsp;kg in one crate that fills the bed, it tilts at most 6&deg;. With the same 410&nbsp;kg split into three loose crates, the crates slide across the bed during the reversal and the truck tips past 45&deg; at 3.1&nbsp;s and ends on its side. Across 12&ndash;15&nbsp;m/s the pattern holds: the empty and fitted trucks stay upright and the loose load rolls the truck. The rollover comes from the crates&rsquo; contacts with the bed; no rule in the model makes it happen.</figcaption>
+        </figure>
+      </article>
+
+      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>.</p>
     </div>
   </section>
 

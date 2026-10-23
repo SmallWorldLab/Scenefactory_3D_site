@@ -4,6 +4,7 @@ Every clip runs ``astra_drive.vehicle_family.FamilyPhysics``: the v1 per-wheel v
 (Newton XPBD, raycast suspension, v1 tire law) generalized to N axles, dual tires, a fifth-wheel
 trailer joint and skid steering. For the SF3D Coupe and Crossover it reproduces the released
 ``vehicle.py``/``physics.py`` bit for bit (tests/test_vehicle_family.py on branch vehicle-family).
+The Pickup's loose crates are free bodies that touch the truck only through contact.
 These are hand-authored vehicle demos, not benchmark episodes.
 
     python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles [--only brake,hauler]
@@ -121,7 +122,8 @@ def launch(M, sim, speeds):
     sim.set_velocities(vel)
 
 
-def run(M, sim, policy, duration):
+def run(M, sim, policy, duration, note=None):
+    """note(vi, poses of vehicle vi's bodies and crates) -> short text shown in its label."""
     frames, every = [], round(1 / sim.DT / LOG_HZ)
     for k in range(int(duration / sim.DT) + 1):
         t = k * sim.DT
@@ -145,6 +147,7 @@ def run(M, sim, policy, duration):
                         "omega": [round(float(a), 2) for a in f.omega],
                         "kmh": round(info[vi][0] * 3.6, 2),
                         "cmd": [round(info[vi][1].throttle, 2), round(info[vi][1].brake, 2), round(info[vi][1].steer, 2)],
+                        **({"note": note(vi, poses[sl])} if note else {}),
                     }
                     for vi, (f, sl) in enumerate(zip(sim.forces, sim.body_slices))
                 ],
@@ -331,9 +334,85 @@ def scenario_courier(M):
     }
 
 
+def crate_offsets(M, model, poses):
+    """Each crate's displacement from its loading place, in the truck frame (m)."""
+    rot = M["rotation"](poses[0][3:])
+    start = M["Physics"].cargo_poses(model, np.array([0, 0, 0, 0, 0, 0, 1.0]))
+    return [rot.T @ (poses[len(model.bodies) + i][:3] - poses[0][:3]) - start[i][:3] for i in range(len(model.cargo))]
+
+
+def tilt_deg(M, pose):
+    return math.degrees(math.acos(min(1.0, M["rotation"](pose[3:])[2, 2])))
+
+
+def scenario_cargo_stop(M):
+    """Hard stop from 72 km/h with three loads in the bed: one loose crate, three loose crates, one fitted crate."""
+    S = M["S"]
+    loads = [("300 kg crate, loose", (S.CRATE,)), ("410 kg in 3 loose crates", S.MIXED_CRATES),
+             ("410 kg crate filling the bed", (S.FITTED_CRATE,))]
+    models = [S.PICKUP.with_cargo(*c) for _, c in loads]
+    ys = [-5.0, 0.0, 5.0]
+    terrain = M["Terrain"](nx=321, ny=41, spacing=0.5, preset="Flat")
+    terrain.add_surface("gravel", DRY, shape="rect", x=0.0, y=0.0, w=160.0, h=20.0)
+    sim = build(M, terrain, [(m, -60.0, y, 0.0) for m, y in zip(models, ys)])
+    v0, brake_at = 20.0, 0.8
+    launch(M, sim, [v0] * 3)
+
+    def policy(i, t, pose, v, wz):
+        if t < brake_at:
+            return (0.0, 0.0, lateral(M, ys[i], pose))
+        return (0.0, 0.85 if v > 0.05 else 1.0, 0.0)
+
+    def note(i, poses):
+        far = max(crate_offsets(M, models[i], poses), key=lambda d: abs(d[0]))
+        return f"crate slid {far[0]:+.2f} m"
+
+    return terrain, sim, run(M, sim, policy, 5.0, note), {
+        "lanes": [{"y": y} for y in ys],
+        "lane_width": 5.0,
+        "labels": [label for label, _ in loads],
+        "markers": [{"x": -60.0 + v0 * brake_at}],
+        "camera": {"mode": "chase", "offset": [-6.0, -12.5, 9.0], "lag": 0.4},
+    }
+
+
+def scenario_cargo_fishhook(M):
+    """Fishhook at 50 km/h: empty, 410 kg fitted crate, 410 kg in three loose crates."""
+    S = M["S"]
+    loads = [("Empty", ()), ("410 kg crate filling the bed", (S.FITTED_CRATE,)), ("410 kg in 3 loose crates", S.MIXED_CRATES)]
+    models = [S.PICKUP.with_cargo(*c) for _, c in loads]
+    # Identical inputs give translated copies of one path, so trucks 8 m apart never meet; the
+    # truck that rolls is outermost, clear of where the others go after the reversal.
+    ys = [-8.0, 0.0, 8.0]
+    terrain = M["Terrain"](nx=241, ny=161, spacing=0.5, preset="Flat")
+    terrain.add_surface("gravel", DRY, shape="rect", x=0.0, y=0.0, w=120.0, h=80.0)
+    sim = build(M, terrain, [(m, -50.0, y, 0.0) for m, y in zip(models, ys)])
+    v0 = 14.0
+    launch(M, sim, [v0] * 3)
+
+    def policy(i, t, pose, v, wz):
+        steer = 0.0 if t < 0.5 else (1.0 if t < 1.4 else (-1.0 if t < 3.5 else 0.0))
+        return (0.0, 0.0, steer)
+
+    peak = [0.0] * 3
+
+    def note(i, poses):
+        peak[i] = max(peak[i], tilt_deg(M, poses[0]))
+        return f"tilt {tilt_deg(M, poses[0]):.0f}° (max {peak[i]:.0f}°)"
+
+    return terrain, sim, run(M, sim, policy, 5.5, note), {
+        "lanes": [],
+        "labels": [label for label, _ in loads],
+        "show_speed": False,
+        "markers": [],
+        "camera": {"mode": "fit", "min_dist": 20, "margin": 2, "lag": 0.15},
+    }
+
+
 SCENARIOS = {
     "brake": scenario_brake, "grade": scenario_grade, "hills": scenario_hills,
     "hauler": scenario_hauler, "closure": scenario_closure, "courier": scenario_courier,
+    "cargo_stop": scenario_cargo_stop, "cargo_fishhook": scenario_cargo_fishhook,
 }
 
 
@@ -353,6 +432,10 @@ def model_json(m):
                            for ax, a in zip(b.wheels(), b.anchors())],
             }
             for b in m.bodies
+        ] + [  # crates: free bodies drawn as boxes, logged after the vehicle's bodies
+            {"shapes": [{"kind": "box", "center": [0, 0, 0], "size": list(c.size), "color": list(c.color), "role": "crate"}],
+             "wheels": []}
+            for c in m.cargo
         ],
     }
 
