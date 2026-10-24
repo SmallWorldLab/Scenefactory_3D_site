@@ -3,7 +3,7 @@
 ## Placeholders
 - [x] **Authors and affiliations.** From arXiv:2610.02874 and the release `CITATION.cff`.
 - [x] **Paper link.** arXiv PDF + abstract in hero; PDF in footer.
-- [x] **Code link.** GitHub `SmallWorldLab/SceneFactory_3D` in hero, footer and `#scope`.
+- [ ] **Code link.** Shown as "coming soon" (hero button disabled, no footer icon, no repo links). On release, link `SmallWorldLab/SceneFactory_3D` in hero, footer, `#scope` and the vehicle-family notes.
 - [x] **BibTeX.** arXiv preprint entry. Switch to the venue entry if the paper is accepted.
 - [x] **Release cards** in `#scope`: checked against the release (`runs/` holds the 12 checkpoints, `astra_drive/benchmark/adapters/` the IDM/PDM adapters).
 

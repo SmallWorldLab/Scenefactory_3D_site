@@ -16,7 +16,7 @@ python3 -m http.server 8000
 ## Publication status
 
 - Paper: [arXiv:2610.02874](https://arxiv.org/abs/2610.02874) (v2, 13 Oct 2026). The page shows the arXiv author list, the arXiv BibTeX and Google Scholar `citation_*` meta tags.
-- Code: [SmallWorldLab/SceneFactory_3D](https://github.com/SmallWorldLab/SceneFactory_3D) (`main`, MIT).
+- Code: coming soon (will be SmallWorldLab/SceneFactory_3D, `main`, MIT). The page shows no repository links until release.
 - Search indexing is enabled (the `noindex` tag was removed).
 
 See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
@@ -38,15 +38,16 @@ See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 `tools/vehicle_demos/` regenerates the eight clips in `#vehicles` (two in `#cargo`):
 
 ```bash
-# Python env with newton, warp and playwright (e.g. astraexplore/.venv); CPU only
-python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles   # -> tools/vehicle_demos/logs/*.json
-python tools/vehicle_demos/render.py                                          # -> assets/videos/vehicles, assets/images/vehicles
+# simulate on the GPU (FamilyBatch; env with newton, warp, gymnasium, e.g. astraexplore/.venv-lab)
+CUDA_VISIBLE_DEVICES=1 python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles   # -> tools/vehicle_demos/logs/*.json
+# render (env with playwright, e.g. astraexplore/.venv)
+python tools/vehicle_demos/render.py   # -> assets/videos/vehicles, assets/images/vehicles
 ```
 
 `--code` points at a checkout of the astraexplore branch `vehicle-family`, whose
 `astra_drive/vehicle_family` extends the released v1 vehicle to N axles, dual tires, a fifth-wheel
-trailer, skid steering and loose cargo crates (bit-identical to v1 for the Coupe and Crossover; see its
-`VEHICLE_FAMILY.md`). `render.py` draws each logged frame with `render.html` (three.js 0.160 from
+trailer, skid steering and loose cargo crates (same formulas as the released GPU kernel for the Coupe and Crossover; see its
+`VEHICLE_FAMILY.md`). `--device cpu` runs the float64 CPU reference instead. `render.py` draws each logged frame with `render.html` (three.js 0.160 from
 jsDelivr) in headless Chrome and encodes H.264. Captions quote numbers from the logs; re-check them
 after re-simulating.
 

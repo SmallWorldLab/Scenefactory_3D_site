@@ -100,9 +100,9 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
-                  </a>
+                  <span class="external-link button is-normal is-rounded is-dark" aria-disabled="true" title="Code release coming soon" style="cursor: default; opacity: 0.7;">
+                    <span class="icon"><i class="fab fa-github"></i></span><span>Code (coming soon)</span>
+                  </span>
                 </span>
                 <span class="link-block">
                   <a href="#vehicles" class="external-link button is-normal is-rounded is-dark">
@@ -281,7 +281,7 @@
       <p class="table-note has-text-centered">Parameters from <code>astra_drive/vehicle.py</code> in the code release, where the Coupe is <code>VEHICLES[0]</code> and the Crossover <code>VEHICLES[1]</code>. Drive torque is the total at the driven wheels.</p>
 
       <h3 class="title is-5 vehicle-group-title">Extended vehicle family <span class="resource-status is-pending">Beyond the paper</span></h3>
-      <p class="vehicle-group-note">Each new vehicle reuses the v1 wheel model unchanged, generalized to any number of axles, dual tires, a fifth-wheel trailer joint and skid steering. A larger tire acts as several v1 tires in parallel. These models are not part of the paper&rsquo;s experiments or its release; their code is on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>.</p>
+      <p class="vehicle-group-note">Each new vehicle reuses the v1 wheel model unchanged, generalized to any number of axles, dual tires, a fifth-wheel trailer joint and skid steering. A larger tire acts as several v1 tires in parallel. These models are not part of the paper&rsquo;s experiments or its release; their code will be on the <code>vehicle-family</code> branch of the code release (coming soon).</p>
       <div class="vehicle-grid is-compact">
         <div class="vehicle-card is-new">
           <div class="vehicle-head"><span class="vehicle-swatch" style="background:#b81a1f"></span><h3 class="title is-4">SF3D Hauler</h3><span class="resource-status">Articulated</span></div>
@@ -340,8 +340,8 @@
         <h3 class="title is-4">Emergency Stop on Dry vs. Icy Asphalt</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/brake.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/brake.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/brake.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/brake.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Four copies of the same manoeuvre: 60&nbsp;km/h, then at the yellow line 0.8 brake with a left&ndash;right swerve, with identical inputs and timing for every car. Only the friction under the second car of each pair changes (&mu;<sub>surface</sub> 1.0 &rarr; 0.18). On dry asphalt the Coupe stops in 14.5&nbsp;m and the Crossover in 18.6&nbsp;m, both moving sideways with the swerve. On ice the braked wheels lock, the swerve produces no lateral motion, and the cars slide 72&nbsp;m and 82&nbsp;m.</figcaption>
@@ -353,8 +353,8 @@
         <h3 class="title is-4">Hill Start on an Icy +8% Grade</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/grade.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/grade.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/grade.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/grade.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Both cars release the brake on a +8% grade at &mu;<sub>surface</sub> 0.25 and apply the same half throttle. Labels show ground speed and the driven wheels&rsquo; surface speed. The all-wheel-drive Crossover spreads the traction demand over four tires and climbs with almost no slip, reaching 29&nbsp;km/h after 8&nbsp;s. The rear-driven Coupe spins its rear wheels at about 126&nbsp;km/h of surface speed and reaches only 13&nbsp;km/h.</figcaption>
@@ -366,8 +366,8 @@
         <h3 class="title is-4">Rolling Heightfield at 45&nbsp;km/h</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hills.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/hills.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hills.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/hills.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Both cars hold 45&nbsp;km/h in their lanes over an undulating dry heightfield. Each wheel&rsquo;s ray finds its own contact, so the four spring&ndash;damper loads differ and the body pitches by up to 10&deg; and rolls by up to 6&deg;. Suspension compresses by up to 0.21&nbsp;m on the Coupe and 0.32&nbsp;m on the Crossover.</figcaption>
@@ -379,8 +379,8 @@
         <h3 class="title is-4">18-Wheeler Lane Change while Braking</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hauler.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/hauler.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/hauler.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/hauler.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Three loaded Haulers run the same 72&nbsp;km/h lane change while braking. On dry road with all axles braked, the rig follows the lane change and stops in 35&nbsp;m. On &mu;<sub>surface</sub> 0.18 with the same braking, every wheel locks and no tire has lateral force left, so the rig slides straight and is still at 29&nbsp;km/h after 99&nbsp;m. On the same ice with only the tractor&rsquo;s drive axles locked, the steer and trailer axles keep their lateral grip and the drive axles lose theirs: the tractor swings around the fifth wheel and jackknifes until its cab meets the trailer at 124&deg;. Nothing in the model prescribes the jackknife.</figcaption>
@@ -392,8 +392,8 @@
         <h3 class="title is-4">Robots Deploy a Lane Closure</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/closure.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/closure.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/closure.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/closure.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Five Cone Bots leave the shoulder one after another, drive into a 28&nbsp;m taper and pivot in place to face traffic; the Barrier Bot then closes the lane behind them. Every robot stops within 0.34&nbsp;m of its target. A Coupe in the closing lane merges left 28&nbsp;m before the taper and passes with a Crossover in the open lane. Robots and cars share one physics world and one wheel model; the robots follow simple waypoint controllers.</figcaption>
@@ -405,8 +405,8 @@
         <h3 class="title is-4">Courier on a Sidewalk Route</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/courier.jpg?v=20261023b">
-              <source src="assets/videos/vehicles/courier.mp4?v=20261023b" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/courier.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/courier.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>The six-wheel Courier drives a sidewalk route at up to 5.9&nbsp;km/h, stops and pivots in place at each corner, and takes a curb ramp 12&nbsp;cm down to the street. Each of the six wheels reads its own contact on the ramp.</figcaption>
@@ -446,8 +446,8 @@
         <h3 class="title is-4">Hard Stop with Cargo in the Bed</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_stop.jpg?v=20261023c">
-              <source src="assets/videos/vehicles/cargo_stop.mp4?v=20261023c" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_stop.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/cargo_stop.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
           <figcaption>Three identical Pickups brake hard (0.85 pedal) from 72&nbsp;km/h at the yellow line. Only the cargo differs. The loose 300&nbsp;kg crate slides the full 0.5&nbsp;m to the front wall and hits it 0.43&nbsp;s after the brakes come on. In the mixed load the 250&nbsp;kg crate slides 1.22&nbsp;m and piles against the two lighter ones. The crate that fills the bed has nowhere to go and moves less than 1&nbsp;mm. Labels show how far the farthest crate has moved in the bed. All three trucks stop in 22&nbsp;m.</figcaption>
@@ -459,15 +459,15 @@
         <h3 class="title is-4">Fishhook at 50&nbsp;km/h: Same Payload, Loose or Fitted</h3>
         <figure class="result-figure demo-figure">
           <div class="video-frame">
-            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_fishhook.jpg?v=20261023c">
-              <source src="assets/videos/vehicles/cargo_fishhook.mp4?v=20261023c" type="video/mp4">
+            <video autoplay muted loop playsinline controls preload="metadata" poster="assets/images/vehicles/cargo_fishhook.jpg?v=20261023gpu">
+              <source src="assets/videos/vehicles/cargo_fishhook.mp4?v=20261023gpu" type="video/mp4">
             </video>
           </div>
-          <figcaption>Each truck coasts at 50&nbsp;km/h, steers full left at 0.5&nbsp;s, then full right at 1.4&nbsp;s, with identical inputs for all three. Empty, the Pickup tilts at most 4&deg;. With 410&nbsp;kg in one crate that fills the bed, it tilts at most 6&deg;. With the same 410&nbsp;kg split into three loose crates, the crates slide across the bed during the reversal and the truck tips past 45&deg; at 3.1&nbsp;s and ends on its side. Across 12&ndash;15&nbsp;m/s the pattern holds: the empty and fitted trucks stay upright and the loose load rolls the truck. The rollover comes from the crates&rsquo; contacts with the bed; no rule in the model makes it happen.</figcaption>
+          <figcaption>Each truck coasts at 50&nbsp;km/h, steers full left at 0.5&nbsp;s, then full right at 1.4&nbsp;s, with identical inputs for all three. Empty, the Pickup tilts at most 4&deg;. With 410&nbsp;kg in one crate that fills the bed, it tilts at most 6&deg;. With the same 410&nbsp;kg split into three loose crates, the crates slide across the bed during the reversal and the truck tips past 45&deg; at 3.0&nbsp;s and rolls over. Across 12&ndash;15&nbsp;m/s the pattern holds: the empty and fitted trucks stay upright and the loose load rolls the truck. The rollover comes from the crates&rsquo; contacts with the bed; no rule in the model makes it happen.</figcaption>
         </figure>
       </article>
 
-      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They run the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <a href="https://github.com/SmallWorldLab/SceneFactory_3D/tree/vehicle-family" target="_blank" rel="noopener"><code>vehicle-family</code> branch</a>) on CPU at 240&nbsp;Hz and are rendered offline over the physics collision boxes. For the Coupe and Crossover this model reproduces the released <code>vehicle.py</code> bit for bit. Scripts are in <code>tools/vehicle_demos/</code>. The same vehicles also run batched on the GPU, many parallel worlds with one thread per vehicle: 16,384 worlds advance 52&nbsp;million Coupe steps, 25&nbsp;million Hauler steps or 11&nbsp;million steps of the Pickup with three crates per second on one workstation GPU. For the Coupe and Crossover the GPU version computes the same formulas as the released GPU kernel.</p>
+      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They are simulated on the GPU by the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <code>vehicle-family</code> branch; code coming soon): one Warp kernel with a thread per vehicle, stepped with Newton XPBD at 240&nbsp;Hz, then rendered offline over the physics collision boxes. For the Coupe and Crossover the kernel computes the same formulas as the released GPU kernel. The same code runs many worlds in parallel: 16,384 worlds advance 52&nbsp;million Coupe steps, 25&nbsp;million Hauler steps or 11&nbsp;million steps of the Pickup with three crates per second on one workstation GPU. Scripts are in <code>tools/vehicle_demos/</code>.</p>
     </div>
   </section>
 
@@ -642,7 +642,7 @@
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Release and Scope</h2>
-          <p class="subtitle">What is released in the <a href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener">code repository</a> (MIT license), and the limits of this study.</p>
+          <p class="subtitle">What the code release (coming soon, MIT license) will contain, and the limits of this study.</p>
         </div>
       </div>
 
@@ -720,7 +720,6 @@
   <div class="container">
     <div class="content has-text-centered footer-links">
       <a class="icon-link" href="https://arxiv.org/pdf/2610.02874" target="_blank" rel="noopener" aria-label="Paper PDF on arXiv"><i class="fas fa-file-pdf"></i></a>
-      <a class="icon-link" href="https://github.com/SmallWorldLab/SceneFactory_3D" target="_blank" rel="noopener" aria-label="Code on GitHub"><i class="fab fa-github"></i></a>
     </div>
     <div class="columns is-centered">
       <div class="column is-8">

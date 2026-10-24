@@ -1,13 +1,15 @@
 """Simulate the vehicle demo clips with the SceneFactory-3D vehicle family.
 
-Every clip runs ``astra_drive.vehicle_family.FamilyPhysics``: the v1 per-wheel vehicle model
-(Newton XPBD, raycast suspension, v1 tire law) generalized to N axles, dual tires, a fifth-wheel
-trailer joint and skid steering. For the SF3D Coupe and Crossover it reproduces the released
-``vehicle.py``/``physics.py`` bit for bit (tests/test_vehicle_family.py on branch vehicle-family).
-The Pickup's loose crates are free bodies that touch the truck only through contact.
+Every clip runs on the GPU with ``astra_drive.vehicle_family.gpu.FamilyBatch`` (one world):
+the v1 per-wheel vehicle model (Newton XPBD, raycast suspension, v1 tire law) generalized to
+N axles, dual tires, a fifth-wheel trailer joint and skid steering, as one Warp kernel with a
+thread per vehicle. For the SF3D Coupe and Crossover it computes the same formulas as the
+released GPU kernel (tests/test_vehicle_family_gpu.py on branch vehicle-family). The Pickup's
+loose crates are free bodies that touch the truck only through contact.
+``--device cpu`` runs the float64 CPU reference (FamilyPhysics) instead.
 These are hand-authored vehicle demos, not benchmark episodes.
 
-    python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles [--only brake,hauler]
+    CUDA_VISIBLE_DEVICES=1 python tools/vehicle_demos/simulate.py --code ~/Github/astraexplore-vehicles [--only brake,hauler]
 """
 
 from __future__ import annotations
@@ -27,7 +29,7 @@ DRY, LOW = 1.0, 0.18  # the paper's reference and most severe friction levels
 SETTLE = 1.5  # s on the springs before a clip starts (not logged)
 
 
-def setup(code):
+def setup(code, device="cuda"):
     sys.path.insert(0, str(code))
     import warp as wp
 
@@ -37,7 +39,58 @@ def setup(code):
     from astra_drive.vehicle_family import spec as S
     from astra_drive.vehicle_family.physics import FamilyPhysics
 
-    return dict(Terrain=Terrain, DriverInput=DriverInput, rotation=rotation, S=S, Physics=FamilyPhysics)
+    M = dict(Terrain=Terrain, DriverInput=DriverInput, rotation=rotation, S=S, Physics=FamilyPhysics, device=device)
+    if device != "cpu":
+        from astra_drive.vehicle_family.gpu import FamilyBatch
+
+        M["Batch"] = FamilyBatch
+    return M
+
+
+class GpuWheels:
+    """Per-vehicle wheel state of a one-world FamilyBatch, shaped like FamilyPhysics.forces[i]."""
+
+    def __init__(self, model, start):
+        self.wheels = [(bi, a) for bi, b in enumerate(model.bodies) for a in b.wheels()]
+        self.span = slice(start, start + len(self.wheels))
+        self.steer_angles = self.wheel_angle = self.lengths = self.omega = np.zeros(len(self.wheels))
+
+
+class GpuSim:
+    """One-world FamilyBatch with the FamilyPhysics interface the scenarios use."""
+
+    def __init__(self, Batch, models, terrain, poses, device):
+        self.batch = Batch(models, terrain, poses, worlds=1, device=device)
+        self.models, self.body_slices, self.DT = self.batch.models, self.batch.body_slices, self.batch.DT
+        self.forces, start = [], 0
+        for m in self.models:
+            self.forces.append(GpuWheels(m, start))
+            start += len(self.forces[-1].wheels)
+        self.time = 0.0
+        self._read()
+
+    def _read(self):
+        b = self.batch
+        self.poses, self.velocities = b.poses[0], b.velocities[0]
+        state = {k: getattr(b, k).numpy()[0] for k in ("steer_angles", "wheel_angles", "lengths", "omega")}
+        for f in self.forces:
+            f.steer_angles, f.wheel_angle = state["steer_angles"][f.span], state["wheel_angles"][f.span]
+            f.lengths, f.omega = state["lengths"][f.span], state["omega"][f.span].copy()
+
+    def set_velocities(self, vel):
+        self.batch.set_velocities(vel)
+        omega = self.batch.omega.numpy()
+        for f in self.forces:
+            omega[0, f.span] = f.omega
+        self.batch.omega.assign(omega)
+        self._read()
+
+    def step(self, cmds):
+        self.batch.set_actions([[c.throttle, c.brake, c.steer, c.gear, float(c.handbrake)] for c in cmds])
+        self.batch.step()
+        assert not self.batch.contacts_overflowed()
+        self.time += self.DT
+        self._read()
 
 
 # ------------------------------------------------------------------ helpers
@@ -101,7 +154,11 @@ def build(M, terrain, placements):
     """placements: [(model, x, y, yaw)]. Returns a settled sim (brakes on, SETTLE seconds)."""
     P = M["Physics"]
     poses = [P.body_poses(m, x, y, yaw, P.touch_height(terrain, m, x, y, yaw) + 0.02) for m, x, y, yaw in placements]
-    sim = P([p[0] for p in placements], terrain, poses=poses, device="cpu")
+    models = [p[0] for p in placements]
+    if M["device"] == "cpu":
+        sim = P(models, terrain, poses=poses, device="cpu")
+    else:
+        sim = GpuSim(M["Batch"], models, terrain, poses, M["device"])
     hold = [M["DriverInput"](0, 1.0, 0) for _ in placements]
     for _ in range(int(SETTLE / sim.DT)):
         sim.step(hold)
@@ -445,8 +502,9 @@ def main():
     ap.add_argument("--code", type=Path, default=Path.home() / "Github/astraexplore-vehicles")
     ap.add_argument("--out", type=Path, default=HERE / "logs")
     ap.add_argument("--only", default="")
+    ap.add_argument("--device", default="cuda:0", help="cuda:N (FamilyBatch, default) or cpu (FamilyPhysics)")
     args = ap.parse_args()
-    M = setup(args.code.resolve())
+    M = setup(args.code.resolve(), args.device)
     rev = subprocess.run(["git", "-C", str(args.code), "rev-parse", "--short", "HEAD"],
                          capture_output=True, text=True).stdout.strip()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -454,7 +512,7 @@ def main():
         if args.only and name not in args.only.split(","):
             continue
         terrain, sim, frames, meta = fn(M)
-        data = {"id": name, "code_rev": rev, "hz": LOG_HZ, **meta, "terrain": terrain_json(terrain),
+        data = {"id": name, "code_rev": rev, "device": args.device, "hz": LOG_HZ, **meta, "terrain": terrain_json(terrain),
                 "models": [model_json(m) for m in sim.models], "frames": frames}
         (args.out / f"{name}.json").write_text(json.dumps(data, separators=(",", ":")))
         last = frames[-1]["v"]
