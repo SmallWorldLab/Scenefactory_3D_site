@@ -3,9 +3,9 @@
 ## Placeholders
 - [x] **Authors and affiliations.** From arXiv:2610.02874 and the release `CITATION.cff`.
 - [x] **Paper link.** arXiv PDF + abstract in hero; PDF in footer.
-- [ ] **Code link.** Shown as "coming soon" (hero button disabled, no footer icon, no repo links). On release, link `SmallWorldLab/SceneFactory_3D` in hero, footer, `#scope` and the vehicle-family notes.
+- [ ] **Code link.** Page states the code is not released yet (hero button disabled, no footer icon, no repo links). On release, link `SmallWorldLab/SceneFactory_3D` in hero, footer, `#scope` and the vehicle-family notes.
 - [x] **BibTeX.** arXiv preprint entry. Switch to the venue entry if the paper is accepted.
-- [x] **Release cards** in `#scope`: checked against the release (`runs/` holds the 12 checkpoints, `astra_drive/benchmark/adapters/` the IDM/PDM adapters).
+- [x] **Release cards** in `#scope` (status "Planned" until the code is public): checked against the release (`runs/` holds the 12 checkpoints, `astra_drive/benchmark/adapters/` the IDM/PDM adapters).
 
 ## Accuracy
 - [ ] The page text was transcribed from manuscript commit `c3d5058`; arXiv v2 (13 Oct) is now the reference. The abstract matches arXiv v2; the section text and tables have not been re-diffed against it.

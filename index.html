@@ -100,8 +100,8 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <span class="external-link button is-normal is-rounded is-dark" aria-disabled="true" title="Code release coming soon" style="cursor: default; opacity: 0.7;">
-                    <span class="icon"><i class="fab fa-github"></i></span><span>Code (coming soon)</span>
+                  <span class="external-link button is-normal is-rounded is-dark" aria-disabled="true" title="The code is not released yet" style="cursor: default; opacity: 0.7;">
+                    <span class="icon"><i class="fab fa-github"></i></span><span>Code (not yet released)</span>
                   </span>
                 </span>
                 <span class="link-block">
@@ -243,7 +243,7 @@
         </div>
       </div>
 
-      <h3 class="title is-5 vehicle-group-title">In the paper&rsquo;s code release</h3>
+      <h3 class="title is-5 vehicle-group-title">In the paper&rsquo;s experiments</h3>
       <div class="vehicle-grid">
         <div class="vehicle-card">
           <div class="vehicle-head"><span class="vehicle-swatch" style="background:#0a7abf"></span><h3 class="title is-4">SF3D Coupe</h3><span class="resource-status">Rear-wheel drive</span></div>
@@ -278,10 +278,10 @@
           </dl>
         </div>
       </div>
-      <p class="table-note has-text-centered">Parameters from <code>astra_drive/vehicle.py</code> in the code release, where the Coupe is <code>VEHICLES[0]</code> and the Crossover <code>VEHICLES[1]</code>. Drive torque is the total at the driven wheels.</p>
+      <p class="table-note has-text-centered">Parameters from the paper&rsquo;s simulator (<code>astra_drive/vehicle.py</code>), where the Coupe is <code>VEHICLES[0]</code> and the Crossover <code>VEHICLES[1]</code>. Drive torque is the total at the driven wheels.</p>
 
       <h3 class="title is-5 vehicle-group-title">Extended vehicle family <span class="resource-status is-pending">Beyond the paper</span></h3>
-      <p class="vehicle-group-note">Each new vehicle reuses the v1 wheel model unchanged, generalized to any number of axles, dual tires, a fifth-wheel trailer joint and skid steering. A larger tire acts as several v1 tires in parallel. These models are not part of the paper&rsquo;s experiments or its release; their code will be on the <code>vehicle-family</code> branch of the code release (coming soon).</p>
+      <p class="vehicle-group-note">Each new vehicle reuses the v1 wheel model unchanged, generalized to any number of axles, dual tires, a fifth-wheel trailer joint and skid steering. A larger tire acts as several v1 tires in parallel. These models are not part of the paper&rsquo;s experiments. Their code is not released yet.</p>
       <div class="vehicle-grid is-compact">
         <div class="vehicle-card is-new">
           <div class="vehicle-head"><span class="vehicle-swatch" style="background:#b81a1f"></span><h3 class="title is-4">SF3D Hauler</h3><span class="resource-status">Articulated</span></div>
@@ -467,7 +467,7 @@
         </figure>
       </article>
 
-      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They are simulated on the GPU by the vehicle-family model (<code>astra_drive/vehicle_family</code> on the <code>vehicle-family</code> branch; code coming soon): one Warp kernel with a thread per vehicle, stepped with Newton XPBD at 240&nbsp;Hz, then rendered offline over the physics collision boxes. For the Coupe and Crossover the kernel computes the same formulas as the released GPU kernel. The same code runs many worlds in parallel: 16,384 worlds advance 52&nbsp;million Coupe steps, 25&nbsp;million Hauler steps or 11&nbsp;million steps of the Pickup with three crates per second on one workstation GPU. Scripts are in <code>tools/vehicle_demos/</code>.</p>
+      <p class="table-note has-text-centered">All eight are hand-authored vehicle demonstrations, not benchmark episodes. They are simulated on the GPU by the vehicle-family model (<code>astra_drive/vehicle_family</code>; the code is not released yet): one Warp kernel with a thread per vehicle, stepped with Newton XPBD at 240&nbsp;Hz, then rendered offline over the physics collision boxes. For the Coupe and Crossover the kernel computes the same formulas as the GPU kernel used in the paper. The same code runs many worlds in parallel: 16,384 worlds advance 52&nbsp;million Coupe steps, 25&nbsp;million Hauler steps or 11&nbsp;million steps of the Pickup with three crates per second on one workstation GPU. Scripts are in <code>tools/vehicle_demos/</code>.</p>
     </div>
   </section>
 
@@ -641,14 +641,14 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Release and Scope</h2>
-          <p class="subtitle">What the code release (coming soon, MIT license) will contain, and the limits of this study.</p>
+          <h2 class="title is-3">Planned Release and Scope</h2>
+          <p class="subtitle">The code is not released yet. We plan to release the following under the MIT license. The limits of this study follow.</p>
         </div>
       </div>
 
       <div class="resource-grid">
         <div class="resource-card">
-          <span class="resource-status">Released</span>
+          <span class="resource-status">Planned</span>
           <h3 class="title is-4">Simulator</h3>
           <p>The batched vehicle and road model on Isaac Lab and Newton.</p>
           <ul>
@@ -659,7 +659,7 @@
           </ul>
         </div>
         <div class="resource-card">
-          <span class="resource-status">Released</span>
+          <span class="resource-status">Planned</span>
           <h3 class="title is-4">Benchmark</h3>
           <p>The lane-closure task and the frozen 21-condition matrix.</p>
           <ul>
@@ -669,7 +669,7 @@
           </ul>
         </div>
         <div class="resource-card">
-          <span class="resource-status">Released</span>
+          <span class="resource-status">Planned</span>
           <h3 class="title is-4">Controllers</h3>
           <p>All evaluated controller regimes.</p>
           <ul>

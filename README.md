@@ -16,7 +16,7 @@ python3 -m http.server 8000
 ## Publication status
 
 - Paper: [arXiv:2610.02874](https://arxiv.org/abs/2610.02874) (v2, 13 Oct 2026). The page shows the arXiv author list, the arXiv BibTeX and Google Scholar `citation_*` meta tags.
-- Code: coming soon (will be SmallWorldLab/SceneFactory_3D, `main`, MIT). The page shows no repository links until release.
+- Code: not released yet (planned: SmallWorldLab/SceneFactory_3D, `main`, MIT). The page says so everywhere and shows no repository links.
 - Search indexing is enabled (the `noindex` tag was removed).
 
 See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
@@ -27,10 +27,10 @@ See [CONTENT_CHECKLIST.md](CONTENT_CHECKLIST.md) before publication.
 |---|---|
 | `#abstract` | Abstract + overview figure (paper Fig. 1) |
 | `#simulator` | Four mechanism cards, tire-force equation, spec strip |
-| `#vehicles` | Spec cards (2 released vehicles + 4 extended-family vehicles) and six demo videos |
+| `#vehicles` | Spec cards (2 paper vehicles + extended-family vehicles) and six demo videos |
 | `#benchmark` | Pipeline figure (paper Fig. 2), task, conditions, controller table |
 | `#results` | Headline table, friction / grade / scaling figures, findings |
-| `#scope` | Release plan and limitations |
+| `#scope` | Planned release (code not released yet) and limitations |
 | `#BibTeX` | arXiv citation |
 
 ## Vehicle demos
@@ -45,11 +45,11 @@ python tools/vehicle_demos/render.py   # -> assets/videos/vehicles, assets/image
 ```
 
 `--code` points at a checkout of the astraexplore branch `vehicle-family`, whose
-`astra_drive/vehicle_family` extends the released v1 vehicle to N axles, dual tires, a fifth-wheel
-trailer, skid steering and loose cargo crates (same formulas as the released GPU kernel for the Coupe and Crossover; see its
+`astra_drive/vehicle_family` extends the paper's v1 vehicle to N axles, dual tires, a fifth-wheel
+trailer, skid steering and loose cargo crates (same formulas as the paper's GPU kernel for the Coupe and Crossover; see its
 `VEHICLE_FAMILY.md`). `--device cpu` runs the float64 CPU reference instead. `render.py` draws each logged frame with `render.html` (three.js 0.160 from
 jsDelivr) in headless Chrome and encodes H.264. Captions quote numbers from the logs; re-check them
 after re-simulating.
 
-Vehicle names on the page are display names: SF3D Coupe = release `VEHICLES[0]`, SF3D Crossover =
-`VEHICLES[1]`. The release code itself is frozen and keeps its own identifiers.
+Vehicle names on the page are display names: SF3D Coupe = paper code `VEHICLES[0]`, SF3D Crossover =
+`VEHICLES[1]`. The paper code (not yet public) is frozen and keeps its own identifiers.
